@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1738090347 source:/mnt/omv1share1/Workspace/IndexFind/IndexFind.cpp
+	<stdio.h>
+	<stdlib.h>
+	<stdint.h>
+	<stdbool.h>
+	<stdarg.h>
+	<string.h>
+	<getopt.h>
+	<iostream>
+	<string>
+	<map>
+
