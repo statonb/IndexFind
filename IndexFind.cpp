@@ -18,9 +18,9 @@ typedef struct
 
 typedef struct fn
 {
-    std::string                 fileName;
-    std::map<std::string, int>  theMap;
-    struct fn                   *pNext;
+    std::string                     fileName;
+    std::map<std::string, stock_t>  theMap;
+    struct fn                       *pNext;
 }   fileNode_t;
 
 fileNode_t          *pHeadNode;
@@ -28,10 +28,12 @@ fileNode_t          *pWorkingNode;
 
 int fileIngest(const char *fileName)
 {
-    char *cp;
+    char *cp1;
+    char *cp2;
     int value = 0;
     char lineBuf[256];
     char tempFilename[256];
+    stock_t t;
     FILE *fp = fopen(fileName, "r");
 
 
@@ -41,32 +43,42 @@ int fileIngest(const char *fileName)
     }
 
     strcpy(tempFilename, fileName);
-    cp = strrchr(tempFilename, '.');
-    if ((char *)(NULL) != cp)
+    cp1 = strrchr(tempFilename, '.');
+    if ((char *)(NULL) != cp1)
     {
-        *cp = '\0';
+        *cp1 = '\0';
     }
-    cp = strrchr(tempFilename, '/');
-    if ((char *)(NULL) == cp)
+    cp1 = strrchr(tempFilename, '/');
+    if ((char *)(NULL) == cp1)
     {
-        cp = tempFilename;
+        cp1 = tempFilename;
     }
     else
     {
-        cp++;
+        cp1++;
     }
-    pWorkingNode->fileName = (std::string)cp;
+    pWorkingNode->fileName = (std::string)cp1;
 
     while (fgets(lineBuf, sizeof(lineBuf), fp))
     {
-        cp = strchr(lineBuf, ',');
-        if ((char *)(NULL) == cp)
+        cp1 = strchr(lineBuf, ',');
+        if ((char *)(NULL) == cp1)
         {
             fclose(fp);
             return 2;
         }
-        *cp = '\0';
-        pWorkingNode->theMap[(std::string)lineBuf] = ++value;
+        *cp1++ = '\0';
+        t.ticker = (std::string)lineBuf;
+        cp2 = strchr(cp1, ',');
+        if ((char *)(NULL) == cp2)
+        {
+            fclose(fp);
+            return 3;
+        }
+        *cp2 = '\0';
+        t.name = (std::string)cp1;
+        t.position = ++value;
+        pWorkingNode->theMap[t.ticker] = t;
     }
     fclose(fp);
     pWorkingNode->pNext = new fileNode_t;
@@ -110,12 +122,13 @@ void usage(void)
 
 int main(int argc, char *argv[])
 {
-    int                                     opt;
-    bool                                    fileFound = false;
-    bool                                    usageError = false;
-    bool                                    quietFlag = false;
-    std::map<std::string, int>::iterator    it;
-    std::string                             stockSymbol = "";
+    int                                         opt;
+    bool                                        fileFound = false;
+    bool                                        usageError = false;
+    bool                                        quietFlag = false;
+    std::map<std::string, stock_t>::iterator    it;
+    std::string                                 stockSymbol = "";
+    std::string                                 stockName = "";
 
     pHeadNode = new fileNode_t;
     pHeadNode->pNext = (fileNode_t *)(NULL);
@@ -204,13 +217,18 @@ int main(int argc, char *argv[])
         it = pWorkingNode->theMap.find(stockSymbol);
         if (it != pWorkingNode->theMap.end())
         {
-            std::cout << it->second << '\n';
+            std::cout << it->second.position << '\n';
+            stockName = it->second.name;
         }
         else
         {
             std::cout << "Not Found\n";
         }
         pWorkingNode = pWorkingNode->pNext;
+    }
+    if ("" != stockName)
+    {
+        std::cout << stockSymbol << ":\t" << stockName << '\n';
     }
 
     return 0;
