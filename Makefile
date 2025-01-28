@@ -40,9 +40,9 @@ OBJDIR_RELEASE = obj/Release
 DEP_RELEASE = 
 OUT_RELEASE = bin/Release/IndexFind
 
-OBJ_DEBUG = $(OBJDIR_DEBUG)/IndexFind.o
+OBJ_DEBUG = $(OBJDIR_DEBUG)/IndexFind.o $(OBJDIR_DEBUG)/stctok.o
 
-OBJ_RELEASE = $(OBJDIR_RELEASE)/IndexFind.o
+OBJ_RELEASE = $(OBJDIR_RELEASE)/IndexFind.o $(OBJDIR_RELEASE)/stctok.o
 
 all: debug release
 
@@ -62,6 +62,9 @@ out_debug: before_debug $(OBJ_DEBUG) $(DEP_DEBUG)
 $(OBJDIR_DEBUG)/IndexFind.o: IndexFind.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c IndexFind.cpp -o $(OBJDIR_DEBUG)/IndexFind.o
 
+$(OBJDIR_DEBUG)/stctok.o: stctok.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c stctok.cpp -o $(OBJDIR_DEBUG)/stctok.o
+
 clean_debug: 
 	rm -f $(OBJ_DEBUG) $(OUT_DEBUG)
 	rm -rf bin/Debug
@@ -80,6 +83,9 @@ out_release: before_release $(OBJ_RELEASE) $(DEP_RELEASE)
 
 $(OBJDIR_RELEASE)/IndexFind.o: IndexFind.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c IndexFind.cpp -o $(OBJDIR_RELEASE)/IndexFind.o
+
+$(OBJDIR_RELEASE)/stctok.o: stctok.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c stctok.cpp -o $(OBJDIR_RELEASE)/stctok.o
 
 clean_release: 
 	rm -f $(OBJ_RELEASE) $(OUT_RELEASE)

@@ -8,11 +8,13 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include "stctok.h"
 
 typedef struct
 {
     std::string                 ticker;
     std::string                 name;
+    double                      weight;
     int                         position;
 }   stock_t;
 
@@ -28,8 +30,8 @@ fileNode_t          *pWorkingNode;
 
 int fileIngest(const char *fileName)
 {
-    char *cp1;
-    char *cp2;
+    char *cp;
+    char *ptr;
     int value = 0;
     char lineBuf[256];
     char tempFilename[256];
@@ -43,40 +45,48 @@ int fileIngest(const char *fileName)
     }
 
     strcpy(tempFilename, fileName);
-    cp1 = strrchr(tempFilename, '.');
-    if ((char *)(NULL) != cp1)
+    cp = strrchr(tempFilename, '.');
+    if ((char *)(NULL) != cp)
     {
-        *cp1 = '\0';
+        *cp = '\0';
     }
-    cp1 = strrchr(tempFilename, '/');
-    if ((char *)(NULL) == cp1)
+    cp = strrchr(tempFilename, '/');
+    if ((char *)(NULL) == cp)
     {
-        cp1 = tempFilename;
+        cp = tempFilename;
     }
     else
     {
-        cp1++;
+        cp++;
     }
-    pWorkingNode->fileName = (std::string)cp1;
+    pWorkingNode->fileName = (std::string)cp;
 
     while (fgets(lineBuf, sizeof(lineBuf), fp))
     {
-        cp1 = strchr(lineBuf, ',');
-        if ((char *)(NULL) == cp1)
+        ptr = lineBuf;
+        ptr = stctok(ptr, lineBuf, sizeof(lineBuf), (char *)(","), 0);
+        if (ptr && *ptr)
+        {
+            t.ticker = (std::string)lineBuf;
+        }
+        else
         {
             fclose(fp);
             return 2;
         }
-        *cp1++ = '\0';
-        t.ticker = (std::string)lineBuf;
-        cp2 = strchr(cp1, ',');
-        if ((char *)(NULL) == cp2)
+
+        ptr = stctok(ptr, lineBuf, sizeof(lineBuf), (char *)(","), 0);
+        if (ptr && *ptr)
+        {
+            t.name = (std::string)lineBuf;
+            t.weight = strtod(ptr, nullptr);
+        }
+        else
         {
             fclose(fp);
             return 3;
         }
-        *cp2 = '\0';
-        t.name = (std::string)cp1;
+
         t.position = ++value;
         pWorkingNode->theMap[t.ticker] = t;
     }
@@ -217,7 +227,7 @@ int main(int argc, char *argv[])
         it = pWorkingNode->theMap.find(stockSymbol);
         if (it != pWorkingNode->theMap.end())
         {
-            std::cout << it->second.position << '\n';
+            std::cout << it->second.position << " : " << it->second.weight << "%\n";
             stockName = it->second.name;
         }
         else

@@ -33,6 +33,8 @@
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="IndexFind.cpp" />
+		<Unit filename="stctok.cpp" />
+		<Unit filename="stctok.h" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

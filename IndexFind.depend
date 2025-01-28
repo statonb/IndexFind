@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1738090347 source:/mnt/omv1share1/Workspace/IndexFind/IndexFind.cpp
+1738093108 source:/mnt/omv1share1/Workspace/IndexFind/IndexFind.cpp
 	<stdio.h>
 	<stdlib.h>
 	<stdint.h>
@@ -10,4 +10,13 @@
 	<iostream>
 	<string>
 	<map>
+	"stctok.h"
+
+1738092047 source:/mnt/omv1share1/Workspace/IndexFind/stctok.cpp
+	"stctok.h"
+	<stdio.h>
+
+1738092047 /mnt/omv1share1/Workspace/IndexFind/stctok.h
+	<string.h>
+	<stdlib.h>
 
