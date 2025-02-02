@@ -5,6 +5,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <getopt.h>
+#include <ctype.h>
 #include <iostream>
 #include <string>
 #include <map>
@@ -125,6 +126,16 @@ int processList(const char *fileName)
     return retVal;
 }
 
+char *strtoupper(char *s)
+{
+    char *cp = s;
+    while (cp && *cp)
+    {
+        *cp = (char)toupper(*cp);
+        ++cp;
+    }
+    return s;
+}
 void usage(void)
 {
     printf("\nUsage Error\n");
@@ -183,7 +194,7 @@ int main(int argc, char *argv[])
             }
             break;
         case 's':
-            stockSymbol = (std::string)optarg;
+            stockSymbol = (std::string)strtoupper(optarg);
             break;
         case 'q':
             quietFlag = true;
